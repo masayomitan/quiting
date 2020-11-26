@@ -67,7 +67,35 @@ const App: React.FC = () => {
     }
   };
 
+  return(
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <h1>REACT QUIZ</h1>
+        { gameOver || userAnserw.length === TOTAL_QUESTIONS ?(
+          <button className='start' onClick={startTravia}>
+            start
+          </button>
+        ) : null }
+        { !gameOver ? <p className='score'>Score: {score}</p> : null }
+        { loading ? <p> Loading Questions...</p> : null }
+        {! loading && !gameOver && (
+          <QuestionCard
+            totalQuestions={TOTAL_QUESTIONS}
+            question={questions[number].question}
+            answers={questions[number].answers}
+            userAnswer={userAnswers ? userAnswers[number] : undefined}
+            callback={checkAnswer}
+          />
+        )}
+        {!gameOver && !loading && userAnswers.length === number + 1 && number !== TOTAL_QUESTIONS - 1 ? (
+          <button className='next' onClick={nextQuestion}>
+            Next Question
+          </button>
+        ) : null}
+      </Wrapper>
+    </>
+  );
+};
 
-
-
-}
+export default App;
