@@ -11,7 +11,7 @@ type props = {
   totalQuestions: number;
 };
 
-const QuestionCard: React.FC<Props> = ({
+const QuestionCard: React.FC<props> = ({
   question,
   answers,
   callback,
