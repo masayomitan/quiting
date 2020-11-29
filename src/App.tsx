@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { fetchQuizQuestions } from './API';
-
+// Components
 import QuestionCard from './components/QuestionCard';
-import { QuestionState, Difficulty } from './API';
+// types
+import { QuestionsState, Difficulty } from './API';
+// Styles
 import { GlobalStyle, Wrapper } from './App.styles';
 
 export type AnswerObject = {
@@ -16,13 +18,13 @@ const TOTAL_QUESTIONS = 10;
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<AnswerObject[]>([]);
+  const [questions, setQuestions] = useState<QuestionsState[]>([]);
   const [number, setNumber] = useState(0);
   const [userAnswers, setUserAnswers] = useState<AnswerObject[]>([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(true);
 
-  const startTravia = async () => {
+  const startTrivia = async () => {
     setLoading(true);
     setGameOver(false);
     const newQuestions = await fetchQuizQuestions(
@@ -38,24 +40,23 @@ const App: React.FC = () => {
 
   const checkAnswer = (e: any) => {
     if (!gameOver) {
-      //user answer
-      const AnswerObject = {
-        
-        const answer = e.currentTarget.value;
-        const correct = questions[number].correct_answer === answer;
-
-        if ( correct ) setScore((prev) => prev + 1);
-        const AnswerObject = {
-          question: questions[number].question,
-          answer,
-          correct,
-          correctAnswer: questions[number].correct_answer,
-        }
+      // User's answer
+      const answer = e.currentTarget.value;
+      // Check answer against correct answer
+      const correct = questions[number].correct_answer === answer;
+      // Add score if answer is correct
+      if (correct) setScore((prev) => prev + 1);
+      // Save the answer in the array for user answers
+      const answerObject = {
+        question: questions[number].question,
+        answer,
+        correct,
+        correctAnswer: questions[number].correct_answer,
       };
-      setUserAnswers((prev) => [...prev, AnswerObject]);
+      setUserAnswers((prev) => [...prev, answerObject]);
     }
   };
-  
+
   const nextQuestion = () => {
     // Move on to the next question if not the last question
     const nextQ = number + 1;
@@ -67,20 +68,21 @@ const App: React.FC = () => {
     }
   };
 
-  return(
+  return (
     <>
       <GlobalStyle />
       <Wrapper>
         <h1>REACT QUIZ</h1>
-        { gameOver || userAnserw.length === TOTAL_QUESTIONS ?(
-          <button className='start' onClick={startTravia}>
-            start
+        {gameOver || userAnswers.length === TOTAL_QUESTIONS ? (
+          <button className='start' onClick={startTrivia}>
+            Start
           </button>
-        ) : null }
-        { !gameOver ? <p className='score'>Score: {score}</p> : null }
-        { loading ? <p> Loading Questions...</p> : null }
-        {! loading && !gameOver && (
+        ) : null}
+        {!gameOver ? <p className='score'>Score: {score}</p> : null}
+        {loading ? <p>Loading Questions...</p> : null}
+        {!loading && !gameOver && (
           <QuestionCard
+            questionNr={number + 1}
             totalQuestions={TOTAL_QUESTIONS}
             question={questions[number].question}
             answers={questions[number].answers}
